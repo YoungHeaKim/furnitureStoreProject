@@ -36,12 +36,24 @@ module.exports = {
       .where({'provider': 'local', user_id})
       .first()
   },
-  createUser(id, password) {
+  createUser(user_id, password) {
     return knex('user')
-      .insert({
-        'provider': 'local',
-        'user_id': id,
-        'access_token': password,
-      })
+    .where({
+      'provider': 'local',
+      user_id
+    })
+    .first()
+    .then(user => {
+      if (user) {
+        return user
+      } else {
+        return knex('user')
+          .insert({
+            'provider': 'local',
+            user_id,
+            'access_token': password,
+         })
+      }
+    })
   }
 }
