@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000
 
 app.set('trust proxy')
 
-app.use('/', authRouter)
+app.use('/auth', authRouter)
 app.use('/test', function(req, res) { return res.send({ alive: true }) })
 
 server.listen(PORT, () => {

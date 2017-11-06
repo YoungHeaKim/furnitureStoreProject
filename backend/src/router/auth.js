@@ -1,6 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
-const csurf = require('csurf')
 const express = require('express')
 const jwt = require('jsonwebtoken')
 
@@ -28,14 +27,22 @@ router.use(mw.bodyParserUrlEncodedMiddleware)
 router.use(mw.corsMiddleware)
 
 app.set('view engine', 'pug')
+// pug 회원가입
+router.get('/register', (req, res) => {
+  res.render('register.pug')
+})
+// pug 로그인
+router.get('/login', (req, res) => {
+  res.render('login.pug')
+})
 
 passport.serializeUser((user, done) => {
   done(null, `${user.provider}:${user.provider_user_id}`)
 })
 
 passport.deserializeUser((str, done) => {
-  const [provider, provider_user_id] = str.split(':')
-  query.firstOrCreateUserByProvider(provider, provider_user_id)
+  const [provider, user_id] = str.split(':')
+  query.firstOrCreateUserByProvider(provider, user_id)
     .then(user => {
       if (user) {
         done(null, user)
@@ -55,10 +62,6 @@ passport.use(new LocalStrategy((user_id, password, done) => {
       }
     })
 }))
-
-router.get('/register', (req, res) => {
-  res.render('register.pug')
-})
 
 router.post('/register', (req, res) => {
   console.log(req.body.user_id, req.body.password)
