@@ -4,6 +4,7 @@ exports.up = function(knex, Promise) {
     t.increments()
     t.string('user_id').notNullable()
     t.string('provider').notNullable()
+    t.string('nickname').notNullable()
     t.string('access_token')
     t.integer('authority')
   })
