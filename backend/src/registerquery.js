@@ -26,11 +26,6 @@ module.exports = {
         }
       })
   },
-  getUserById(id) {
-    return knex('user')
-      .where({id})
-      .first()
-  },
   getLocalUserById(user_id) {
     return knex('user')
       .where({'provider': 'local', user_id})
