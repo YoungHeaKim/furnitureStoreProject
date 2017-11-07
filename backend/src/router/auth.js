@@ -4,7 +4,7 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 
 const passport = require('passport')
-const query = require('../registerquery')
+const query = require('../authquery')
 const mw = require('../middleware')
 
 const app = express()
@@ -47,7 +47,8 @@ passport.deserializeUser((id, done) => {
     } else {
       done(new Error('해당 정보와 일치하는 사용자가 없습니다.'))
     }
-})})
+  })
+})
 
 // Local Strategy
 passport.use(new LocalStrategy((user_id, password, done) => {
