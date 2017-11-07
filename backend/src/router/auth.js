@@ -4,7 +4,7 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 
 const passport = require('passport')
-const query = require('../authquery')
+const query = require('../query')
 const mw = require('../middleware')
 
 const app = express()
