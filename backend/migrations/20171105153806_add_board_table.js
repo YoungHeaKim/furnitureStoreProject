@@ -3,7 +3,7 @@ exports.up = function(knex, Promise) {
   return knex.schema.createTable('board', t => {
     t.increments()
     t.string('title').notNullable()
-    t.text('content', [mediumtext])
+    t.text('content', 'mediumtext')
     t.timestamp('created_at').defaultTo(knex.fn.now())
     t.integer('notify_type').notNullable()
     t.integer('creator').unsigned().notNullable()
