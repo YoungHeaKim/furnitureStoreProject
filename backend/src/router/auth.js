@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const express = require('express')
 const jwt = require('jsonwebtoken')
 const cookieSession = require('cookie-session')
+// const csurf = require('csurf')
 
 const passport = require('passport')
 const query = require('../query')
@@ -33,11 +34,13 @@ router.use(mw.bodyParserUrlEncodedMiddleware)
 router.use(mw.corsMiddleware)
 
 router.use(cookieSession({
-  name: 'session',
+  name: 'oasess',
   keys: [
     process.env.SESSION_SECRET
   ]
 }))
+
+// router.use(csurf())
 
 app.set('view engine', 'pug')
 // pug 회원가입
@@ -51,13 +54,12 @@ router.get('/login', (req, res) => {
 
 // Passport serializer
 passport.serializeUser((user, done) => {
-  console.log('serializeUser', user )
+  console.log(user.user_id, user.nickname)
   done(null, `${user.user_id}:${user.nickname}`)
 })
 
 // Passport deserializser
 passport.deserializeUser((id, done) => {
-  console.log('deserializeUser', id)
   const [user_id, nickname] = str.split(':')
   query.getLocalUserById({user_id, nickname})
     .then(user => {
@@ -70,8 +72,7 @@ passport.deserializeUser((id, done) => {
 })
 
 // Local Strategy
-passport.use(new LocalStrategy({ usernameField: 'user_id'}, (user_id, password, done) => {
-  console.log(user_id, password)
+passport.use(new LocalStrategy({ usernameField: 'user_id' }, (user_id, password, done) => {
   query.checkAlreadyJoinId({user_id})
     .then(matched => {
       (matched && bcrypt.compareSync(password, matched.access_token))? done(null, matched) : done(new Error('아이디 또는 패스워드가 일치하지 않습니다.'))
@@ -112,20 +113,19 @@ router.post('/login', (req, res, next) => {
       res.redirect('/auth/success')
     })
   })(req, res, next)
-}, oauthHandler)
+})
+
+// router.get('/success', (req, res) => {
+//   console.log(req.user.user_id)
+//   const token = jwt.sign({ 'id': req.user.user_id }, process.env.JWT_SECRET)
+//   res.render('success.pug',{
+//     token,
+//     'origin': process.env.TARGET_ORIGIN
+//   })
+// })
 
 router.get('/success', (req, res) => {
   res.render('success.pug')
-})
-
-
-// success
-router.get('/success', mw.loginRequired, (req, res) => {
-  const token = jwt.sign({id: req.user.id}, process.env.JWT_SECRET)
-  res.render('success.pug', {
-    token,
-    origin: process.env.TARGET_ORIGIN
-  })
 })
 
 module.exports = router
