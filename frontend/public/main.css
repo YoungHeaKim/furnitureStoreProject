@@ -1,0 +1,83 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+}
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #58666e;
+  /* background-color: #f0f3f4; */
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjus: 100%;
+}
+.wrap {
+  position: relative;
+}
+/* after를 쓸 떄는 :은 하나만 쓰고 사용한다.  */
+.wrap :after {
+  clear: both;
+  display: block;
+  content: "";
+}
+header {
+  width: 100%;
+  height: 60px;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+}
+header a {
+
+}
+aside {
+  position: fixed;
+  top: 60px;
+  bottom: 0;
+  left: 0;
+  background-color: #333;
+  width: 15%;
+  color: white;
+  clear: both;
+}
+aside h2{
+  position: absolute;
+  top: 5%; left: 50%;
+  transform: translateX(-50%);
+}
+aside li{
+  padding: 15px; 
+}
+aside ul{
+  margin-top: 100px;
+}
+aside a {
+  color: white;
+}
+aside li:hover{
+  background-color: green; 
+}
+section {
+  float: right;
+  margin-left: 15%;
+  width: 85%;
+  background-color: skyblue;
+  margin: 60px 0 0;
+  clear: both;
+}
+section h2 {
+}
+article table{
+  border: 1px solid black;
+}
+/* footer {
+  position: absolute;
+  height: 60px;
+  width: 100%;
+  padding: 0 25px;
+  line-height: 60px;
+  color: #8a8c8f;
+  border-top: 1px solid #dee5e7;
+  background-color: #f2f2f2;
+} */
