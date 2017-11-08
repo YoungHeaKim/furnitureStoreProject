@@ -12,6 +12,15 @@ const app = express()
 
 const router = express.Router()
 
+const oauthHandler = (req, res) => {
+  const token = jwt.sign({
+    id: req.user.id,
+    expiresIn: '1d'
+  }, process.env.SECRET)
+  const origin = process.env.TARGET_ORIGIN
+  res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
+}
+
 // 초기화
 router.use(passport.initialize())
 
@@ -61,7 +70,7 @@ passport.deserializeUser((id, done) => {
 })
 
 // Local Strategy
-passport.use(new LocalStrategy((user_id, password, done) => {
+passport.use(new LocalStrategy({ usernameField: 'user_id'}, (user_id, password, done) => {
   console.log(user_id, password)
   query.checkAlreadyJoinId({user_id})
     .then(matched => {
@@ -100,12 +109,15 @@ router.post('/login', (req, res, next) => {
       if (err) {
         return next(err)
       }
-      const message = 'close auth page'
-      req.io.sockets.emit('close_auth', {message})
       res.redirect('/auth/success')
     })
   })(req, res, next)
+}, oauthHandler)
+
+router.get('/success', (req, res) => {
+  res.render('success.pug')
 })
+
 
 // success
 router.get('/success', mw.loginRequired, (req, res) => {
