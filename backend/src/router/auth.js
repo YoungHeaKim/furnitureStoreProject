@@ -2,6 +2,7 @@ const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 const express = require('express')
 const jwt = require('jsonwebtoken')
+const cookieSession = require('cookie-session')
 
 const passport = require('passport')
 const query = require('../query')
@@ -16,9 +17,18 @@ router.use(passport.initialize())
 
 // 인증시 세션을 사용한다.
 router.use(passport.session())
+
+// 미들웨어
 router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
 router.use(mw.corsMiddleware)
+
+router.use(cookieSession({
+  name: 'session',
+  keys: [
+    process.env.SESSION_SECRET
+  ]
+}))
 
 app.set('view engine', 'pug')
 // pug 회원가입
@@ -41,13 +51,13 @@ passport.deserializeUser((id, done) => {
   console.log('deserializeUser', id)
   const [user_id, nickname] = str.split(':')
   query.getLocalUserById({user_id, nickname})
-  .then(user => {
-    if (user) {
-      done(null, user)
-    } else {
-      done(new Error('해당 정보와 일치하는 사용자가 없습니다.'))
-    }
-  })
+    .then(user => {
+      if (user) {
+        done(null, user)
+      } else {
+        done(new Error('해당 정보와 일치하는 사용자가 없습니다.'))
+      }
+    })
 })
 
 // Local Strategy
@@ -90,6 +100,8 @@ router.post('/login', (req, res, next) => {
       if (err) {
         return next(err)
       }
+      const message = 'close auth page'
+      req.io.sockets.emit('close_auth', {message})
       res.redirect('/auth/success')
     })
   })(req, res, next)

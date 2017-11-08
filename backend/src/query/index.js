@@ -1,7 +1,7 @@
 const {...auth} = require('./authquery')  
-const {...list} = require('./listquery')
+const {...board} = require('./boardquery')
 
 module.exports = {
   ...auth,
-  ...list
+  ...board
 }

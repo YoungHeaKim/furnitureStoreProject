@@ -15,4 +15,10 @@ router.get('/', (req, res) => {
     .then(list => res.send(list))
 })
 
+router.get('/:id', (req,res) => {
+  const board_type = req.params.id
+  query.getBoardTypeById({board_type})
+    .then(list => res.send(list))
+})
+
 module.exports = router
