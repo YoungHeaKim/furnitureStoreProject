@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt')
 const express = require('express')
 const jwt = require('jsonwebtoken')
 const cookieSession = require('cookie-session')
-// const csurf = require('csurf')
 
 const passport = require('passport')
 const query = require('../query')
@@ -40,7 +39,7 @@ router.use(cookieSession({
   ]
 }))
 
-// router.use(csurf())
+// router.use(mw.csurfMiddleware)
 
 app.set('view engine', 'pug')
 // pug 회원가입
