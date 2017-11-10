@@ -105,7 +105,7 @@ router.post('/login', (req, res, next) => {
     if (!user) {
       return res.redirect('/auth/login')
     }
-    req.logIn(user, (err) => {
+    req.logIn(user, err => {
       if (err) {
         return next(err)
       }
