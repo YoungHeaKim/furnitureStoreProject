@@ -17,6 +17,10 @@ app.use('/auth', authRouter)
 app.use('/board', boardRouter)
 app.use('/test', function(req, res) { return res.send({ alive: true }) })
 
+app.get('/', (req, res) => {
+  res.send('Hello JWT')
+})
+
 server.listen(PORT, () => {
   console.log(`Able to connect to ${PORT}`)
 })

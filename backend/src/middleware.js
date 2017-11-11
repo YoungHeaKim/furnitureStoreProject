@@ -1,7 +1,6 @@
 const expressJwt = require('express-jwt')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const csurf = require('csurf')
 
 const corsMiddleware = cors({
   origin: process.env.TARGET_ORIGIN
@@ -15,13 +14,12 @@ const bodyParserJsonMiddleware = bodyParser.json()
 
 const bodyParserUrlEncodedMiddleware = bodyParser.urlencoded({ extended: false })
 
-const csurfMiddleware = csurf()
-
 function loginRequired(req, res, next) {
+  console.log(req.user)
   if (req.user) {
     next()
   } else {
-    res.redirect('/login')
+    res.redirect('/auth/login')
   }
 }
 
@@ -30,6 +28,5 @@ module.exports = {
   jwtMiddleware,
   bodyParserJsonMiddleware,
   bodyParserUrlEncodedMiddleware,
-  csurfMiddleware,
   loginRequired
 }
