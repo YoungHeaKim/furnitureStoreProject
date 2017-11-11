@@ -12,6 +12,7 @@ const app = express()
 
 const router = express.Router()
 
+// 유효토큰의 기간은 1일로 한다. (expiresIn: '1d')
 const oauthHandler = (req, res) => {
   const token = jwt.sign({
     id: req.user.id,
@@ -39,8 +40,6 @@ router.use(cookieSession({
   ]
 }))
 
-// router.use(mw.csurfMiddleware)
-
 app.set('view engine', 'pug')
 // pug 회원가입
 router.get('/register', (req, res) => {
@@ -53,13 +52,12 @@ router.get('/login', (req, res) => {
 
 // Passport serializer
 passport.serializeUser((user, done) => {
-  console.log(user.user_id, user.nickname)
-  done(null, `${user.user_id}:${user.nickname}`)
+  done(null, `${user.user_id}:${user.nickname}`)  
 })
 
 // Passport deserializser
-passport.deserializeUser((id, done) => {
-  const [user_id, nickname] = str.split(':')
+passport.deserializeUser((user, done) => {
+  const [user_id, nickname] = user.split(':')
   query.getLocalUserById({user_id, nickname})
     .then(user => {
       if (user) {
@@ -78,7 +76,7 @@ passport.use(new LocalStrategy({ usernameField: 'user_id' }, (user_id, password,
     })
 }))
 
-// 회원가입
+// Local Register Router
 router.post('/register', (req, res) => {
   const user_id = req.body.user_id
         password = bcrypt.hashSync(req.body.password, 10),
@@ -92,6 +90,19 @@ router.post('/register', (req, res) => {
           .then(() => {
             res.redirect('/auth/login')
           })
+      }
+    })
+})
+
+// Local Register Check ID Router
+router.get('/register', (req, res) => {
+  const user_id = req.query.user_id
+  query.checkAlreadyJoinId({user_id})
+    .then(data => {
+      if(data){
+
+      } else {
+
       }
     })
 })
@@ -114,17 +125,14 @@ router.post('/login', (req, res, next) => {
   })(req, res, next)
 })
 
-// router.get('/success', (req, res) => {
-//   console.log(req.user.user_id)
-//   const token = jwt.sign({ 'id': req.user.user_id }, process.env.JWT_SECRET)
-//   res.render('success.pug',{
-//     token,
-//     'origin': process.env.TARGET_ORIGIN
-//   })
-// })
-
-router.get('/success', (req, res) => {
-  res.render('success.pug')
+// 성공시 토큰 발급하고 Hello JWT 테스트 코드 전송
+router.get('/success', mw.loginRequired, (req, res) => {
+  const token = jwt.sign({
+    id: req.user.user_id,
+    expiresIn: '1d'
+  }, process.env.SECRET)
+  const origin = process.env.TARGET_ORIGIN
+  res.send('Hello JWT', `<script>window.opener.postMessage('${token}', '${origin}')</script>`)
 })
 
 module.exports = router
