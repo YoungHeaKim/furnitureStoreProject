@@ -28,6 +28,9 @@ router.use(passport.initialize())
 // 인증시 세션을 사용한다.
 router.use(passport.session())
 
+// router.use(mw.csrfMiddleware)
+// router.use(mw.insertToken)
+
 // 미들웨어
 router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
@@ -78,7 +81,7 @@ passport.use(new LocalStrategy({ usernameField: 'user_id' }, (user_id, password,
 
 // Local Register Router
 router.post('/register', (req, res) => {
-  const user_id = req.body.user_id
+  const user_id = req.body.user_id,
         password = bcrypt.hashSync(req.body.password, 10),
         nickname = req.body.nickname
   query.checkAlreadyJoinId({user_id})
@@ -108,31 +111,9 @@ router.get('/register', (req, res) => {
 })
 
 // Local login Router
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      return next(err)
-    }
-    if (!user) {
-      return res.redirect('/auth/login')
-    }
-    req.logIn(user, err => {
-      if (err) {
-        return next(err)
-      }
-      res.redirect('/auth/success')
-    })
-  })(req, res, next)
-})
-
-// 성공시 토큰 발급하고 Hello JWT 테스트 코드 전송
-router.get('/success', mw.loginRequired, (req, res) => {
-  const token = jwt.sign({
-    id: req.user.user_id,
-    expiresIn: '1d'
-  }, process.env.SECRET)
-  const origin = process.env.TARGET_ORIGIN
-  res.send('Hello JWT', `<script>window.opener.postMessage('${token}', '${origin}')</script>`)
-})
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/auth/login'
+}));
 
 module.exports = router
