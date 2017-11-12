@@ -5,6 +5,7 @@ const express = require('express')
 
 const authRouter = require('./router/auth')
 const boardRouter = require('./router/board')
+const mw = require('./middleware')
 
 const app = express()
 const server = http.Server(app)
@@ -15,10 +16,11 @@ app.set('trust proxy')
 
 app.use('/auth', authRouter)
 app.use('/board', boardRouter)
-app.use('/test', function(req, res) { return res.send({ alive: true }) })
+// app.use(mw.csrfMiddleware)
+// app.use(mw.insertToken)
 
 app.get('/', (req, res) => {
-  res.send('Hello JWT')
+  res.send('welcome')
 })
 
 server.listen(PORT, () => {
