@@ -1,10 +1,10 @@
+const express = require('express')
+const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
-const express = require('express')
 const jwt = require('jsonwebtoken')
 const cookieSession = require('cookie-session')
 
-const passport = require('passport')
 const query = require('../query')
 const mw = require('../middleware')
 
@@ -17,10 +17,13 @@ router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
 router.use(mw.corsMiddleware)
 router.use(cookieSession({
-  name: 'oasess',
+  name: 'bat',
   keys: [
     process.env.SESSION_SECRET
-  ]
+  ],
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24
+  }
 }))
 router.use(mw.csrfMiddleware)
 router.use(mw.insertToken)
@@ -73,28 +76,26 @@ router.post('/register', (req, res) => {
 })
 
 // Local Register Check ID Router
-router.get('/register', (req, res) => {
-  const user_id = req.query.user_id
-  query.checkAlreadyJoinId({user_id})
-    .then(data => {
-      if(data){
+// router.get('/register', (req, res) => {
+//   const user_id = req.query.user_id
+//   query.checkAlreadyJoinId({user_id})
+//     .then(data => {
+//       if(data){
 
-      } else {
+//       } else {
 
-      }
-    })
-})
+//       }
+//     })
+// })
 
 // Local login Router
-// 로컬로그인 되는 코드
 // router.post('/login', passport.authenticate('local', {
 //   successRedirect: '/',
 //   failureRedirect: '/auth/login'
-// }));
+// }))
 
 // Local Login Router Custom Callback
 router.post('/login', (req, res, next) => {
-  console.log('로그인 라우터')
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       return next(err)
