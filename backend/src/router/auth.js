@@ -28,30 +28,21 @@ router.use(passport.initialize())
 // 인증시 세션을 사용한다.
 router.use(passport.session())
 
-// router.use(mw.csrfMiddleware)
-// router.use(mw.insertToken)
-
 // 미들웨어
 router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
 router.use(mw.corsMiddleware)
-
 router.use(cookieSession({
   name: 'oasess',
   keys: [
     process.env.SESSION_SECRET
   ]
 }))
+router.use(mw.csrfMiddleware)
+router.use(mw.insertToken)
 
-app.set('view engine', 'pug')
-// pug 회원가입
-router.get('/register', (req, res) => {
-  res.render('register.pug')
-})
-// pug 로그인
-router.get('/login', (req, res) => {
-  res.render('login.pug')
-})
+
+
 
 // Passport serializer
 passport.serializeUser((user, done) => {
@@ -111,9 +102,39 @@ router.get('/register', (req, res) => {
 })
 
 // Local login Router
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/auth/login'
-}));
+// 로컬로그인 되는 코드
+// router.post('/login', passport.authenticate('local', {
+//   successRedirect: '/',
+//   failureRedirect: '/auth/login'
+// }));
+
+// Local Login Router
+router.post('/login', (req, res, next) => {
+  console.log('로그인 라우터')
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err)
+    }
+    if(!user) {
+      throw new Error ('아이디와 비밀번호를 입력해주세요.')
+    }
+    req.logIn(user, err => {
+      if (err) {
+        return next(err)
+      }
+      res.redirect('/auth/success')
+    })
+  })(req, res, next)
+})
+
+// 성공시 토큰 입력
+router.get('/success', mw.loginRequired, (req, res) => {
+  const token = jwt.sign({id: req.user.id}, process.env.JWT_SECRET)
+  res.render('success.pug', {
+    token,
+    origin: process.env.TARGET_ORIGIN
+  })
+})
+
 
 module.exports = router
