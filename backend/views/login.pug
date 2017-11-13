@@ -2,7 +2,7 @@ block body
   h1 로그인
   p Local 로그인
     form(action='/auth/login', method='post')
-      //- input(type='hidden', name='_csrf', value=csrfToken)
+      input(type='hidden', name='_csrf', value=csrfToken)
       input(type='text', placeholder= '아이디', name='user_id')
       input(type='password', placeholder= '비밀번호', name='password')
       button(type='submit') 로그인

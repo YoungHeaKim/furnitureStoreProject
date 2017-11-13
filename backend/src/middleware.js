@@ -23,6 +23,7 @@ function insertToken(req, res, next) {
 }
 
 function loginRequired(req, res, next) {
+  console.log('로그인 미들웨어')
   console.log(req.user)
   if (req.user) {
     next()
