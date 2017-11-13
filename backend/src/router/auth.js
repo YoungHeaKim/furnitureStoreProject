@@ -12,23 +12,7 @@ const app = express()
 
 const router = express.Router()
 
-// 유효토큰의 기간은 1일로 한다. (expiresIn: '1d')
-const oauthHandler = (req, res) => {
-  const token = jwt.sign({
-    id: req.user.id,
-    expiresIn: '1d'
-  }, process.env.SECRET)
-  const origin = process.env.TARGET_ORIGIN
-  res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
-}
-
-// 초기화
-router.use(passport.initialize())
-
-// 인증시 세션을 사용한다.
-router.use(passport.session())
-
-// 미들웨어
+// middleware
 router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
 router.use(mw.corsMiddleware)
@@ -40,16 +24,16 @@ router.use(cookieSession({
 }))
 router.use(mw.csrfMiddleware)
 router.use(mw.insertToken)
+// passport
+router.use(passport.initialize())
+router.use(passport.session())
 
-
-
-
-// Passport serializer
+// Passport Serializer
 passport.serializeUser((user, done) => {
   done(null, `${user.user_id}:${user.nickname}`)  
 })
 
-// Passport deserializser
+// Passport Deserializser
 passport.deserializeUser((user, done) => {
   const [user_id, nickname] = user.split(':')
   query.getLocalUserById({user_id, nickname})
@@ -108,7 +92,7 @@ router.get('/register', (req, res) => {
 //   failureRedirect: '/auth/login'
 // }));
 
-// Local Login Router
+// Local Login Router Custom Callback
 router.post('/login', (req, res, next) => {
   console.log('로그인 라우터')
   passport.authenticate('local', (err, user, info) => {
@@ -127,13 +111,14 @@ router.post('/login', (req, res, next) => {
   })(req, res, next)
 })
 
-// 성공시 토큰 입력
+// Input Token
 router.get('/success', mw.loginRequired, (req, res) => {
-  const token = jwt.sign({id: req.user.id}, process.env.JWT_SECRET)
-  res.render('success.pug', {
-    token,
-    origin: process.env.TARGET_ORIGIN
-  })
+  const token = jwt.sign({
+    id: req.user.id,
+    expiresIn: '1d'
+  }, process.env.SECRET)
+  const origin = process.env.TARGET_ORIGIN
+  res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
 })
 
 
