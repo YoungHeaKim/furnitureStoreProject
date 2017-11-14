@@ -39,7 +39,7 @@ passport.serializeUser((user, done) => {
 // Passport Deserializser
 passport.deserializeUser((user, done) => {
   const [user_id, nickname] = user.split(':')
-  query.getLocalUserById({user_id, nickname})
+  query.getUserByUserIdAndNickname({user_id, nickname})
     .then(user => {
       if (user) {
         done(null, user)
@@ -51,7 +51,7 @@ passport.deserializeUser((user, done) => {
 
 // Local Strategy
 passport.use(new LocalStrategy({ usernameField: 'user_id' }, (user_id, password, done) => {
-  query.checkAlreadyJoinId({user_id})
+  query.getUserByUserId({user_id})
     .then(matched => {
       (matched && bcrypt.compareSync(password, matched.access_token))? done(null, matched) : done(new Error('아이디 또는 패스워드가 일치하지 않습니다.'))
     })
@@ -62,7 +62,7 @@ router.post('/register', (req, res) => {
   const user_id = req.body.user_id,
         password = bcrypt.hashSync(req.body.password, 10),
         nickname = req.body.nickname
-  query.checkAlreadyJoinId({user_id})
+  query.getUserByUserId({user_id})
     .then(matched => {
       if (matched) {
         throw new Error ('이미 사용중인 아이디가 있습니다.')
@@ -78,7 +78,7 @@ router.post('/register', (req, res) => {
 // Local Register Check ID Router
 // router.get('/register', (req, res) => {
 //   const user_id = req.query.user_id
-//   query.checkAlreadyJoinId({user_id})
+//   query.getUserByUserId({user_id})
 //     .then(data => {
 //       if(data){
 
