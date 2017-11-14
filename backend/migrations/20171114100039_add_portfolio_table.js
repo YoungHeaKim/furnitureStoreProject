@@ -9,8 +9,9 @@ exports.up =  (knex, Promise) => {
     t.timestamp('created_at').defaultTo(knex.fn.now())
     t.integer('creator').unsigned().notNullable()
     t.foreign('creator').references('user.id')
-};
+  })
+}
 
 exports.down = (knex, Promise) => {
   return knex.schema.dropTable('portfolio')
-};
+}

@@ -8,8 +8,8 @@ exports.up = (knex, Promise) => {
     t.string('access_token')
     t.integer('authority').defaultTo(0)
   })
-};
+}
 
 exports.down = (knex, Promise) => {
   return knex.schema.dropTable('user')
-};
+}

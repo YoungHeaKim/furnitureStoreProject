@@ -11,8 +11,8 @@ exports.up = (knex, Promise) => {
     t.integer('work_type_id').unsigned().notNullable()
     t.foreign('work_type_id').references('work_type.id')
   })
-};
+}
 
 exports.down = (knex, Promise) => {
   return knex.schema.dropTable('contents')
-};
+}
