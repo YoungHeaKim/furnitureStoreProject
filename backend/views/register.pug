@@ -2,6 +2,7 @@
 block body
   h1 회원가입
   form(action='/auth/register', method='post')
+    input(type='hidden', name='_csrf', value=csrfToken)
     input(type='text', placeholder= '아이디', name='user_id')
     br
     input(type='password', placeholder= '비밀번호', name='password')
