@@ -3,7 +3,6 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const cookieSession = require('cookie-session')
 
 const query = require('../query')
 const mw = require('../middleware')
@@ -16,15 +15,7 @@ const router = express.Router()
 router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
 router.use(mw.corsMiddleware)
-router.use(cookieSession({
-  name: 'bat',
-  keys: [
-    process.env.SESSION_SECRET
-  ],
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24
-  }
-}))
+router.use(mw.cookieSessionMiddleware)
 router.use(mw.csrfMiddleware)
 router.use(mw.insertToken)
 // passport
@@ -33,16 +24,18 @@ router.use(passport.session())
 
 // Passport Serializer
 passport.serializeUser((user, done) => {
+  console.log('Serializser')
   done(null, `${user.user_id}:${user.nickname}`)  
 })
 
 // Passport Deserializser
 passport.deserializeUser((user, done) => {
   const [user_id, nickname] = user.split(':')
+  console.log('Deserializser')
   query.getUserByUserIdAndNickname({user_id, nickname})
     .then(user => {
       if (user) {
-        done(null, user)
+        done(null, `${user.user_id}:${user.nickname}`)
       } else {
         done(new Error('해당 정보와 일치하는 사용자가 없습니다.'))
       }
@@ -113,14 +106,14 @@ router.post('/login', (req, res, next) => {
 })
 
 // Input Token
-router.get('/success', mw.loginRequired, (req, res) => {
-  const token = jwt.sign({
-    id: req.user.id,
-    expiresIn: '1d'
-  }, process.env.SECRET)
-  const origin = process.env.TARGET_ORIGIN
-  res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
-})
+// router.get('/success', mw.loginRequired, (req, res) => {
+//   const token = jwt.sign({
+//     id: req.user.id,
+//     expiresIn: '1d'
+//   }, process.env.SECRET)
+//   const origin = process.env.TARGET_ORIGIN
+//   res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
+// })
 
 
 module.exports = router

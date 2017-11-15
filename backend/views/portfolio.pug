@@ -1,0 +1,224 @@
+form(action="/portfolio", method="post")
+      table
+        colgroup
+          col(width="15%")
+          col(width="35%")
+          col(width="15%")
+          col(width="35%")
+        tbody
+          tr
+            th 작성자
+            td(colspan="3" name="creator" value="1") 김세롬
+          tr
+            th
+              label(for="bgcolor") 배경색 코드
+            td
+              input(type='hidden', name='_csrf', value=csrfToken)
+              input(id="bgcolor" name="bgcolor" type="text"  placeholder="예시 : #f9f9f9")
+            th
+              label(for="fontcolor") 폰트색 코드
+            td
+              input(id="fontcolor" name="fontcolor" type="text" placeholder="예시 : #f9f9f9")
+          tr
+            th 
+              label(for="titleenglish") 영문 제목
+            td 
+              input(id="titleenglish" name="eng_title" type="text")
+            th
+              label(for="titlekorean") 한글 제목
+            td
+              input(id="titlekorean" name="kor_title" type="text")
+          tr
+            th(rowspan="2") 리스트 이미지 등록
+            td(colspan="3")
+              label(for="titleimgdesktop") 웹 리스트 이미지 등록
+              input(id="titleimgdesktop" type="file")
+              p
+                span 웹 리스트 이미지
+                button(type="button") 삭제
+          tr
+            td(colspan="3")
+              label(for="titleimgmobile") 모바일 리스트 이미지 등록
+              input(id="titleimgmobile" type="file")
+              p
+                span 모바일 리스트 이미지
+                button(type="button") 삭제
+          tr
+            th(rowspan="2") 대표 이미지 등록
+            td(colspan="3")
+              label(for="titleimgdesktop") 웹 대표 이미지 등록
+              input(id="titleimgdesktop" type="file")
+              p
+                span 웹 대표 이미지
+                button(type="button") 삭제
+          tr
+            td(colspan="3")
+              label(for="titleimgmobile") 모바일 대표 이미지 등록
+              input(id="titleimgmobile" type="file")
+              p
+                span 모바일 대표 이미지
+                button(type="button") 삭제
+          tr
+            th
+              label(for="tag") tag
+            td(colspan="3")
+              input(id="tag" name="tag" type="text")
+              p * '#'을 단어들 앞에 붙여 태그를 구분해주세요
+          tr
+            th 작업 종류
+            td(colspan="3")
+              ul
+                li
+                  input(id="kind1" type="checkbox")
+                  label(for="kind1") 브랜딩
+                li
+                  input(id="kind2" type="checkbox")
+                  label(for="kind2") 마켓팅
+                //- li
+                  input(id="kind3" type="checkbox")
+                  label(for="kind3") 개발
+      hr
+      table
+        colgroup
+          col(width="15%")
+          col(width="35%")
+          col(width="15%")
+          col(width="35%")
+        tbody
+          tr
+            th(rowspan="5") 브랜딩 등록
+            td(colspan="3")
+              ul
+                li 
+                  h1 대표 웹 글 입력
+                  textarea
+                li 
+                  h1 글 웹 입력
+                  textarea
+          tr
+            td(colspan="3")
+              ul
+                li 
+                  h1 대표 모바일 글 입력
+                  textarea
+                li 
+                  h1 글 모바일 입력
+                  textarea
+          tr
+            td(colspan="3")
+              button(type="button") 회사 추가
+              ul
+                li
+                  label(for="companyname") 회사명
+                  input(id="companyname" type="text")
+                  button(type="button") 작업자 추가
+                  ul
+                    li
+                      label(for="workername") 작업자
+                      input(id="workername" type="text")
+                      label(for="workertodo") 작업 내용
+                      input(id="workertodo" type="text")
+                    li
+                      label(for="workername") 작업자
+                      input(id="workername" type="text")
+                      label(for="workertodo") 작업 내용
+                      input(id="workertodo" type="text")
+          tr
+            td(colspan="3")
+              label(for="bimgdesktop") 웹 이미지 등록
+              input(id="bimgdesktop" type="file")
+              ul
+                li
+                  span 이미지1
+                  button(type="button") 삭제
+                li
+                  span 이미지2
+                  button(type="button") 삭제
+                li
+                  span 이미지3
+                  button(type="button") 삭제
+          tr
+            td(colspan="3")
+              label(for="bimgmobile") 모바일 이미지 등록
+              input(id="bimgmobile" type="file")
+              ul
+                li
+                  span 이미지1
+                  button(type="button") 삭제
+      hr
+      table
+        colgroup
+          col(width="15%")
+          col(width="35%")
+          col(width="15%")
+          col(width="35%")
+        tbody
+          tr
+            th(rowspan="5") 마케팅 등록
+            td(colspan="3")
+              ul
+                li 
+                  h1 대표 모바일 글 입력
+                  textarea
+                li 
+                  h1 글 모바일 입력
+                  textarea
+          tr
+            td(colspan="3")
+              button(type="button") 회사 추가
+              ul
+                li
+                  label(for="companyname") 회사명
+                  input(id="companyname" type="text")
+                  button(type="button") 작업자 추가
+                  ul
+                    li
+                      label(for="workername") 작업자
+                      input(id="workername" type="text")
+                      label(for="workertodo") 작업 내용
+                      input(id="workertodo" type="text")
+                    li
+                      label(for="workername") 작업자
+                      input(id="workername" type="text")
+                      label(for="workertodo") 작업 내용
+                      input(id="workertodo" type="text")
+          tr
+            td(colspan="3")
+              ul
+                li
+                  label(for=" mimgdesktop") 컨텐츠 노출
+                  input(id="mimgdesktop" type="text")
+                li
+                  label(for=" mimgdesktop") 컨텐츠 도달
+                  input(id="mimgdesktop" type="text")
+                li
+                  label(for=" mimgdesktop") 컨텐츠 참여
+                  input(id="mimgdesktop" type="text")
+                li
+                  label(for=" mimgdesktop") 페이스북 좋아요
+                  input(id="mimgdesktop" type="text")
+          tr
+            td(colspan="3")
+              label(for="bimgdesktop") 웹 이미지 등록
+              input(id="bimgdesktop" type="file")
+              ul
+                li
+                  span 이미지1
+                  button(type="button") 삭제
+                li
+                  span 이미지2
+                  button(type="button") 삭제
+                li
+                  span 이미지3
+                  button(type="button") 삭제
+          tr
+            td(colspan="3")
+              label(for="bimgmobile") 모바일 이미지 등록
+              input(id="bimgmobile" type="file")
+              ul
+                li
+                  span 이미지1
+                  button(type="button") 삭제
+      .btns
+        button(type="submit") 포트폴리오 작성
+        button(type="button") 전체삭제

@@ -2,9 +2,11 @@ require('dotenv').config()
 
 const http = require('http')
 const express = require('express')
+const jwt = require('jsonwebtoken')
 
 const authRouter = require('./router/auth')
 const boardRouter = require('./router/board')
+const portfolioRouter = require('./router/portfolio')
 const mw = require('./middleware')
 
 const app = express()
@@ -17,20 +19,36 @@ app.set('view engine', 'pug')
 
 app.use('/auth', authRouter)
 app.use('/board', boardRouter)
+app.use('/portfolio', portfolioRouter)
 
 app.get('/', (req, res) => {
   res.send('welcome')
 })
 
-// pug 회원가입
-app.get('/auth/register', (req, res) => {
-  res.render('register.pug')
-})
 // pug 로그인
 app.get('/auth/login', (req, res) => {
   res.render('login.pug')
 })
-
+// pug 회원가입
+app.get('/auth/register', (req, res) => {
+  res.render('register.pug')
+})
+// pug 포트폴리오
+app.get('/portfolio', (req, res) => {
+  res.render('portfolio.pug')
+})
+// pug success
+app.get('/auth/success', mw.loginRequired, (req, res) => {
+  const token = jwt.sign({
+    id: req.user.id,
+    expiresIn: '1d'
+  }, process.env.SECRET)
+  const origin = process.env.TARGET_ORIGIN
+  res.render('success.pug', {
+    token,
+    origin
+  })
+})
 
 server.listen(PORT, () => {
   console.log(`Able to connect to ${PORT}`)
