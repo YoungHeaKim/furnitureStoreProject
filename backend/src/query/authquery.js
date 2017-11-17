@@ -1,10 +1,11 @@
 const knex = require('../knex')
 
 module.exports = {
-  getUserByUserIdAndNickname({user_id, nickname}) {
+  getUserByID({id}) {
     return knex('user')
-      .where({'provider': 'local', user_id, nickname})
+      .where({'provider': 'local', id})
       .first()
+      .select('id')
   },
   getUserByUserId({user_id}) {
     return knex('user')

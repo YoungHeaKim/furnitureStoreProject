@@ -25,17 +25,17 @@ router.use(passport.session())
 // Passport Serializer
 passport.serializeUser((user, done) => {
   console.log('Serializser')
-  done(null, `${user.user_id}:${user.nickname}`)  
+  done(null, user.id)  
 })
 
 // Passport Deserializser
 passport.deserializeUser((user, done) => {
-  const [user_id, nickname] = user.split(':')
   console.log('Deserializser')
-  query.getUserByUserIdAndNickname({user_id, nickname})
+  const id = user
+  query.getUserByID({id})
     .then(user => {
       if (user) {
-        done(null, `${user.user_id}:${user.nickname}`)
+        done(null, user)
       } else {
         done(new Error('해당 정보와 일치하는 사용자가 없습니다.'))
       }
