@@ -39,15 +39,7 @@ app.get('/portfolio', (req, res) => {
 })
 // pug success
 app.get('/auth/success', mw.loginRequired, (req, res) => {
-  const token = jwt.sign({
-    id: req.user.id,
-    expiresIn: '1d'
-  }, process.env.SECRET)
-  const origin = process.env.TARGET_ORIGIN
-  res.render('success.pug', {
-    token,
-    origin
-  })
+  res.render('success.pug')
 })
 
 server.listen(PORT, () => {
