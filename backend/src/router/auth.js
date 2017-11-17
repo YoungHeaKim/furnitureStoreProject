@@ -2,7 +2,6 @@ const express = require('express')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 
 const query = require('../query')
 const mw = require('../middleware')
@@ -99,6 +98,9 @@ router.post('/login', (req, res, next) => {
     req.logIn(user, err => {
       if (err) {
         return next(err)
+      }
+      if(user){
+        mw.oauthHandler
       }
       res.redirect('/auth/success')
     })
