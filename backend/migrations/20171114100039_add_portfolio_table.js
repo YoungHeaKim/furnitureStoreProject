@@ -2,8 +2,8 @@
 exports.up =  (knex, Promise) => {
   return knex.schema.createTable('portfolio', t => {
     t.increments()
-    t.string('bgcolor')
-    t.string('fontcolor')
+    t.string('bg_color')
+    t.string('font_color')
     t.string('tag')
     t.string('eng_title')
     t.string('kor_title')
