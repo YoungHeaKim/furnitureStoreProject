@@ -67,55 +67,10 @@ router.post('/register', (req, res) => {
     })
 })
 
-// Local Register Check ID Router
-// router.get('/register', (req, res) => {
-//   const user_id = req.query.user_id
-//   query.getUserByUserId({user_id})
-//     .then(data => {
-//       if(data){
-
-//       } else {
-
-//       }
-//     })
-// })
-
 // Local login Router
-// router.post('/login', passport.authenticate('local', {
-//   successRedirect: '/',
-//   failureRedirect: '/auth/login'
-// }))
-
-// Local Login Router Custom Callback
-router.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      return next(err)
-    }
-    if(!user) {
-      throw new Error ('아이디와 비밀번호를 입력해주세요.')
-    }
-    req.logIn(user, err => {
-      if (err) {
-        return next(err)
-      }
-      if(user){
-        mw.oauthHandler
-      }
-      res.redirect('/auth/success')
-    })
-  })(req, res, next)
-})
-
-// Input Token
-// router.get('/success', mw.loginRequired, (req, res) => {
-//   const token = jwt.sign({
-//     id: req.user.id,
-//     expiresIn: '1d'
-//   }, process.env.SECRET)
-//   const origin = process.env.TARGET_ORIGIN
-//   res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
-// })
-
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/auth/success',
+  failureRedirect: '/auth/login'
+}))
 
 module.exports = router
