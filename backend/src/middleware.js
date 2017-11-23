@@ -1,4 +1,3 @@
-const expressJwt = require('express-jwt')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const csurf = require('csurf')
@@ -6,10 +5,6 @@ const cookieSession = require('cookie-session')
 
 const corsMiddleware = cors({
   origin: process.env.TARGET_ORIGIN
-})
-
-const jwtMiddleware = expressJwt({
-  secret: process.env.SECRET
 })
 
 const bodyParserJsonMiddleware = bodyParser.json()
@@ -24,7 +19,7 @@ const cookieSessionMiddleware = cookieSession({
     process.env.SESSION_SECRET
   ],
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24
+    maxAge: 1000 * 60 * 60 * 8
   }
 })
 
@@ -33,21 +28,19 @@ const insertToken = (req, res, next) => {
   next()
 }
 
-const loginRequired = (req, res, next) => {
-  if (req.user) {
+const checkAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()){
     next()
-  } else {
-    res.redirect('/auth/login')
   }
+  res.redirect('/auth/login')
 }
 
 module.exports = {
   corsMiddleware,
-  jwtMiddleware,
   bodyParserJsonMiddleware,
   bodyParserUrlEncodedMiddleware,
   csrfMiddleware,
   cookieSessionMiddleware,
   insertToken,
-  loginRequired
+  checkAuthenticated
 }
