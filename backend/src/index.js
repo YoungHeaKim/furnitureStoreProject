@@ -2,7 +2,6 @@ require('dotenv').config()
 
 const http = require('http')
 const express = require('express')
-const jwt = require('jsonwebtoken')
 
 const authRouter = require('./router/auth')
 const boardRouter = require('./router/board')
@@ -34,11 +33,11 @@ app.get('/auth/register', (req, res) => {
   res.render('register.pug')
 })
 // pug 포트폴리오
-app.get('/portfolio', (req, res) => {
+app.get('/portfolio', mw.checkAuthenticated, (req, res) => {
   res.render('portfolio.pug')
 })
 // pug success
-app.get('/auth/success', mw.loginRequired, (req, res) => {
+app.get('/auth/success', mw.checkAuthenticated, (req, res) => {
   res.render('success.pug')
 })
 
